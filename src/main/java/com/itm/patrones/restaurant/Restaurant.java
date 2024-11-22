@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Restaurant implements Reservation {
+public class Restaurant implements RestaurantReservation {
     private static final Map<String, Restaurant> instances = new HashMap<>();
     private final String name;
     private final List<Table> tables;

@@ -5,7 +5,7 @@ import com.itm.patrones.factory.TableForGroupFactory;
 import com.itm.patrones.factory.TableForTwoFactory;
 import com.itm.patrones.menu.MenuItem;
 import com.itm.patrones.menu.MenuSection;
-import com.itm.patrones.restaurant.ReservationProxy;
+import com.itm.patrones.restaurant.RestaurantReservationProxy;
 import com.itm.patrones.restaurant.Restaurant;
 import com.itm.patrones.table.Table;
 import com.itm.patrones.table.decorator.SimpleTable;
@@ -72,8 +72,8 @@ public class Main {
         System.out.println("\nAvailability in " + restaurant2.getName() + ":");
         restaurant2.checkTableAvailability();
 
-        final ReservationProxy reservationForRestaurant1 = new ReservationProxy(restaurant1, 5);
-        final ReservationProxy reservationForRestaurant2 = new ReservationProxy(restaurant2, 18);
+        final RestaurantReservationProxy reservationForRestaurant1 = new RestaurantReservationProxy(restaurant1, 5);
+        final RestaurantReservationProxy reservationForRestaurant2 = new RestaurantReservationProxy(restaurant2, 18);
 
         // Reservar la mesa para dos en el primer restaurante
         reservationForRestaurant1.reserveTable(simpleTableForTwo, 14);

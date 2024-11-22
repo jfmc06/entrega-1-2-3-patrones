@@ -1,10 +1,10 @@
 package com.itm.patrones.menu;
 
-public class MenuItem extends MenuComponent {
-    private String name;
-    private double price;
+public class MenuItem implements MenuComponent {
+    private final String name;
+    private final double price;
 
-    public MenuItem(String name, double price) {
+    public MenuItem(final String name, final double price) {
         this.name = name;
         this.price = price;
     }
@@ -14,7 +14,6 @@ public class MenuItem extends MenuComponent {
         return name;
     }
 
-    @Override
     public double getPrice() {
         return price;
     }

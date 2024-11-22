@@ -3,7 +3,7 @@ package com.itm.patrones.menu;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuSection extends MenuComponent {
+public class MenuSection implements MenuComponent {
     private final List<MenuComponent> menuComponents = new ArrayList<>();
     private final String sectionName;
 
@@ -11,14 +11,8 @@ public class MenuSection extends MenuComponent {
         this.sectionName = sectionName;
     }
 
-    @Override
     public void add(final MenuComponent menuComponent) {
         menuComponents.add(menuComponent);
-    }
-
-    @Override
-    public void remove(final MenuComponent menuComponent) {
-        menuComponents.remove(menuComponent);
     }
 
     @Override
@@ -32,11 +26,5 @@ public class MenuSection extends MenuComponent {
     @Override
     public String getName() {
         return sectionName;
-    }
-
-    @Override
-    public double getPrice() {
-        // O podrías tener un precio agregado de todos los elementos en esta sección
-        return 0;
     }
 }
