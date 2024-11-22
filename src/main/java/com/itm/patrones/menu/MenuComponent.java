@@ -5,10 +5,6 @@ public abstract class MenuComponent {
         throw new UnsupportedOperationException();
     }
 
-    public void remove(final MenuComponent menuComponent) {
-        throw new UnsupportedOperationException();
-    }
-
     public abstract String getName();
     public abstract double getPrice();
     public abstract void display();
