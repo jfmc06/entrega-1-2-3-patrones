@@ -1,5 +1,6 @@
 package com.itm.patrones.restaurant;
 
+import com.itm.patrones.client.Client;
 import com.itm.patrones.table.Table;
 
 public class RestaurantReservationProxy implements RestaurantReservation {
@@ -12,9 +13,9 @@ public class RestaurantReservationProxy implements RestaurantReservation {
     }
 
     @Override
-    public void reserveTable(final Table table, final int age) {
-        if (age >= this.minAgeAllowed) {
-            restaurantReservation.reserveTable(table, age);
+    public void reserveTable(final Table table, final Client client) {
+        if (client.getAge() >= this.minAgeAllowed) {
+            restaurantReservation.reserveTable(table, client);
         } else {
             System.out.println("You must be at least 18 years old to reserve a table.");
         }

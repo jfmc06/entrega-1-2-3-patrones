@@ -1,7 +1,11 @@
 package com.itm.patrones.restaurant;
 
+import com.itm.patrones.client.Client;
 import com.itm.patrones.menu.MenuComponent;
+import com.itm.patrones.reserve.ReserveObserver;
 import com.itm.patrones.table.Table;
+import com.itm.patrones.table.iterator.RestaurantTableIterator;
+import com.itm.patrones.table.iterator.TableIterator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,10 +16,12 @@ public class Restaurant implements RestaurantReservation {
     private final String name;
     private final List<Table> tables;
     private MenuComponent menu;
+    private final List<ReserveObserver> observers;
 
     private Restaurant(final String name) {
         this.name = name;
         this.tables = new ArrayList<>();
+        this.observers = new ArrayList<>();
     }
 
     public static Restaurant getInstance(final String name) {
@@ -49,7 +55,9 @@ public class Restaurant implements RestaurantReservation {
 
     public void checkTableAvailability() {
         System.out.println("\n=============== Checking table availability in restaurant: " + name + " ===============");
-        for (final Table table : tables) {
+        final TableIterator iterator = new RestaurantTableIterator(tables);
+        while (iterator.hasNext()) {
+            Table table = iterator.next();
             System.out.println("\n======== TABLE INFO ========");
             table.displayInfo();
             System.out.println("============================\n");
@@ -58,15 +66,26 @@ public class Restaurant implements RestaurantReservation {
     }
 
     @Override
-    public void reserveTable(final Table table, final int age) {
+    public void reserveTable(final Table table, final Client client) {
         if (tables.contains(table)) {
             tables.remove(table);
             System.out.println("\n============ RESERVATION ============");
             System.out.println(table.getType() + " reserved in " + name + " with this conditions: ");
             table.displayInfo();
             System.out.println("======================================\n");
+            notifyObservers("Table reserved: " + table.getType() + " at " + name, client);
             return;
         }
         System.out.println("Table not available in " + name + ": " + table.getType());
+    }
+
+    public void addObserver(final ReserveObserver observer) {
+        this.observers.add(observer);
+    }
+
+    private void notifyObservers(final String message, final Client client) {
+        for (final ReserveObserver observer : observers) {
+            observer.notify(message, client);
+        }
     }
 }

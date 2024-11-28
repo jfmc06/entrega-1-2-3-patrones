@@ -1,10 +1,17 @@
 package com.itm.patrones;
 
+import com.itm.patrones.client.Client;
 import com.itm.patrones.factory.TableFactory;
 import com.itm.patrones.factory.TableForGroupFactory;
 import com.itm.patrones.factory.TableForTwoFactory;
 import com.itm.patrones.menu.MenuItem;
 import com.itm.patrones.menu.MenuSection;
+import com.itm.patrones.payment.CashPaymentStrategy;
+import com.itm.patrones.payment.CreditCardPaymentStrategy;
+import com.itm.patrones.payment.PaymentContext;
+import com.itm.patrones.reserve.EmailNotifier;
+import com.itm.patrones.reserve.ReserveObserver;
+import com.itm.patrones.reserve.RestaurantSystemNotifier;
 import com.itm.patrones.restaurant.RestaurantReservationProxy;
 import com.itm.patrones.restaurant.Restaurant;
 import com.itm.patrones.table.Table;
@@ -16,6 +23,10 @@ public class Main {
     public static void main(String[] args) {
         // Crear y obtener la instancia del primer restaurante
         final Restaurant restaurant1 = Restaurant.getInstance("Delicious Eats");
+        final ReserveObserver restaurantSystemNotifier = new RestaurantSystemNotifier();
+        final ReserveObserver emailNotifier = new EmailNotifier();
+        restaurant1.addObserver(restaurantSystemNotifier);
+        restaurant1.addObserver(emailNotifier);
 
         // Crear factory para mesas para dos
         final TableFactory tableForTwoFactory = new TableForTwoFactory();
@@ -60,6 +71,7 @@ public class Main {
 
         // Obtener la instancia del segundo restaurante
         final Restaurant restaurant2 = Restaurant.getInstance("Gourmet Bistro - Bar");
+        restaurant2.addObserver(emailNotifier);
         restaurant2.addTable(simpleTableForTwo.clone());
         restaurant2.addTable(simpleTableForTwo.clone());
 
@@ -72,21 +84,30 @@ public class Main {
         System.out.println("\nAvailability in " + restaurant2.getName() + ":");
         restaurant2.checkTableAvailability();
 
+        final PaymentContext paymentContext = new PaymentContext();
+        paymentContext.setPaymentStrategy(new CashPaymentStrategy());
+
         final RestaurantReservationProxy reservationForRestaurant1 = new RestaurantReservationProxy(restaurant1, 5);
         final RestaurantReservationProxy reservationForRestaurant2 = new RestaurantReservationProxy(restaurant2, 18);
 
         // Reservar la mesa para dos en el primer restaurante
-        reservationForRestaurant1.reserveTable(simpleTableForTwo, 14);
+        final Client client1 = new Client("John Doe", 14, "john@mail.com");
+        reservationForRestaurant1.reserveTable(simpleTableForTwo, client1);
+        paymentContext.pay(10, client1);
 
         // Ver disponibilidad de mesas después de la reserva en el primer restaurante
         System.out.println("\nAvailability in " + restaurant1.getName() + " after reserving a table:");
         restaurant1.checkTableAvailability();
 
         // Reservar la mesa para grupo en el segundo restaurante, pero una edad no válida
-        reservationForRestaurant2.reserveTable(simpleTableForGroup, 15);
+        final Client client2 = new Client("Jane Smith", 16, "jane@mail.com");
+        reservationForRestaurant2.reserveTable(simpleTableForGroup, client2);
 
         // Reservar la mesa para grupo en el segundo restaurante con una edad válida
-        reservationForRestaurant2.reserveTable(simpleTableForGroup, 32);
+        final Client client3 = new Client("Miguel Perez", 32, "miguel@mail.com");
+        reservationForRestaurant2.reserveTable(simpleTableForGroup, client3);
+        paymentContext.setPaymentStrategy(new CreditCardPaymentStrategy());
+        paymentContext.pay(50, client3);
 
         // Ver disponibilidad de mesas después de la reserva en el segundo restaurante
         System.out.println("\nAvailability in " + restaurant2.getName() + " after reserving a table:");
