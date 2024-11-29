@@ -4,8 +4,8 @@ import com.itm.patrones.client.Client;
 import com.itm.patrones.menu.MenuComponent;
 import com.itm.patrones.reserve.ReserveObserver;
 import com.itm.patrones.table.Table;
-import com.itm.patrones.table.iterator.RestaurantTableIterator;
-import com.itm.patrones.table.iterator.TableIterator;
+import com.itm.patrones.table.iterator.Iterable;
+import com.itm.patrones.table.iterator.Iterator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,9 +55,9 @@ public class Restaurant implements RestaurantReservation {
 
     public void checkTableAvailability() {
         System.out.println("\n=============== Checking table availability in restaurant: " + name + " ===============");
-        final TableIterator iterator = new RestaurantTableIterator(tables);
+        final Iterator<Table> iterator = new Iterable<>(tables);
         while (iterator.hasNext()) {
-            Table table = iterator.next();
+            final Table table = iterator.next();
             System.out.println("\n======== TABLE INFO ========");
             table.displayInfo();
             System.out.println("============================\n");
